@@ -1,2 +1,7 @@
 # Ignore auxiliary LaTeX files
-/express-firebase-notes
+**/*.aux
+**/*.log
+**/*.latexmk
+**/*.fls
+**/*.synctex.gz
+**/*.fdb_latexmk
