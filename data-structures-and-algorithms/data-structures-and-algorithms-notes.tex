@@ -1,0 +1,160 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\title{Data Structure and Algorithms Notes}
+\author{Abdallah Abou-Chahine}
+\date{2023-02-27}
+\begin{document}
+\maketitle
+
+\section{LINKED LISTS}
+A \textbf{linked list} is a \textbf{linear} data structure in which elements are stored in \textbf{nodes} and each node \textbf{points} to the \textbf{next node} in the list. The main advantage of linked lists over arrays is that elements can be\textbf{ easily inserted} or \textbf{removed} without reallocating memory for the entire list. There are two main types of linked lists: \textbf{single linked} lists and \textbf{double linked lists}.\\
+
+Each list is a linear data typically has the following functions:
+
+\begin{enumerate}[label=\arabic*., wide=0pt, labelwidth=!, labelsep=5pt]
+
+    \item \textbf{Insertion:} Adding a new node to the linked list, either at the beginning, end, or a specific position.
+
+    \item \textbf{Deletion:} Removing a node from the linked list, either based on its value or its position in the list.
+
+    \item \textbf{Search:} Finding a specific node in the linked list based on its value.
+
+    \item \textbf{Traversal:} Iterating through all the nodes in the linked list to access their values.
+
+    \item \textbf{Length:} Finding the number of nodes in the linked list.
+
+    \item \textbf{Reverse:} Reversing the order of the nodes in the linked list.
+
+    \item \textbf{Sort:} Sorting the nodes in the linked list based on their values.
+
+\end{enumerate}
+\subsection[short]{Single Linked List}
+In a single linked list, each node has a single reference to the next node in the list. This makes it easy to traverse the list in one direction, but difficult to traverse the list in reverse or to efficiently find the previous node.\\
+
+We start by creating a \textbf{Node} class with a constructor:
+
+\begin{verbatim}
+    
+    class Node {
+
+        constructor(data){
+            this.data = data;
+            this.next = null;
+        }
+
+    }
+
+\end{verbatim}
+What's effectively happening here is that when the constructor is called it will initialize a newly created object of type Node with the following properties set: 
+\begin{verbatim}
+    this.data = data;
+    this.next = null
+\end{verbatim}
+
+
+Once thats done, we start by creating the singleLinkedList class:
+
+\begin{verbatim}
+    
+        class singleLinkedList{
+
+            constructor(){
+                this.head = null;
+                this.tail = null
+            }
+
+
+        }
+\end{verbatim}
+
+The singleLinkedList class contains a constructor that initializes the value of the head and tail of the list to null. Now we will create all the mentioned methods to the class - insertion, deletion, search, traversal, reversal, length and sort.
+\newpage
+\subsubsection{append()}
+
+The purpose of this method is to add a Node to the end of the list. We can create the method with the following code within the \textit{singleLinkedList} class:
+
+\begin{verbatim}
+    {
+        ...
+
+        append(){
+
+            const newNode = new Node(data)
+            // if the list is empty set the value of the head and tail to the newNode
+            if(this.head==null){
+
+                this.head = newNode;
+                this.tail = newNode;
+
+            }else{
+
+                this.tail.next = newNode;
+                this.tail = newNode;
+            }
+
+        return this;
+        }
+
+        ...
+    }
+\end{verbatim}
+
+The first thing we need to do is to check if the \textbf{head} of the list is null i.e. empty. If the list is empty (which it would be in the beginning) then we will assign the value of the head to the newNode.
+In the case where the head is not empty, (which will be the case now ) we want to set the value of the tail to the newNode. This can be accomplished by the else statement below:
+
+\begin{verbatim}
+    else{
+        this.tail.next = newNode;
+        this.tail = newNode;
+        }
+\end{verbatim}
+
+The first line sets the value of the current tail's \textbf{next property} to the newNode. Then the second line sets the value of the tail to the newNode - appending the Node to the end of the list.
+
+Whats interesting about the code above is that we are manipulating and changing the value of \textit{this.tail.next} first (which is a property of \textit{this.tail}) first before changing the value of \textit{this.tail} to the new Node right after. 
+One may be under the impression that the value of \textit{this.tail.next} might be overwritten by the assignment \textit{this.tail = newNode}. But this is in fact not the case, since we are not dealing with \textbf{primitive data types}, but rather with \textbf{object references} in memory. 
+The assignment \textit{this.tail = newNode} simply updates the reference of \textit{this.tail} to point to a different object in memory, while the property \textit{next} of the original object remains unchanged.
+In other words, we are updating the value of the \textit{next} property in the \textit{this.tail} node to reference the \textit{newNode}. Then we are updating the value of the \textit{this.tail} reference to be equal to the \textit{newNode} instead of the previous value that it was pointing to. This allows us to keep adding new nodes to the end of the linked list as the tail reference will keep pointing to the latest node that was added to the list.
+
+\subsubsection{prepend()}
+
+In this method we would like to add the newly created Node in the beginning of the list. This can be achieved in the following code:
+
+\begin{verbatim}
+    prepend(){
+    
+        const newNode = new Node(data);
+        newNode.next = this.head;
+        this.head = newNode;
+
+        return this;
+
+    }
+
+\end{verbatim}
+
+
+
+
+\newpage
+\subsection[short]{Double Linked List}
+
+
+In a double linked list, each node has references to both the next and previous nodes in the list. This makes it easy to traverse the list in both directions and to efficiently find both the next and previous nodes. However, double linked lists require more memory than single linked lists because each node needs to store two references.
+
+
+\section{Equations}
+In LaTeX, equations can be written using the \verb|\[| and \verb|\]| commands:
+
+\[ e^{i\pi} + 1 = 0 \]
+
+\section{Images}
+Images can be included in a LaTeX document using the \verb|\includegraphics| command:
+
+\begin{figure}
+\centering
+\end{figure}
+
+\end{document}
