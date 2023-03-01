@@ -107,4 +107,96 @@ Here's a breakdown of the code:
 The overall goal of this code is to provide a centralized way of setting up a Firestore client instance that can be reused throughout the application, rather than having to set up the Firestore client in every module that needs it.
  This makes it easier to manage the Firestore client and makes the code more organized and maintainable.
 
+\newpage
+ \section[short]{Create Record}
+Start by writing the following code to create a new record at the /addAuthor endpoint.
+\begin{verbatim}
+  app.post("/addAuthor", async (req, res) => {
+    try {
+      const { author, quotes } = req.body;
+  
+      // get reference to the author's document
+      const authorRef = db.collection("authors").doc(author);
+      const doc = await authorRef.get();
+  
+      if (!doc.exists) {
+        // if the author doesn't exist, create a new document with the author and quotes
+        const newAuthor = await authorRef.set({
+          author,
+          quotes: [quotes],
+        });
+      } else {
+        // if the author exists, append the new quote to the existing quotes array
+        const existingQuotes = doc.data().quotes;
+        const updatedQuotes = [...existingQuotes, quotes];
+        const update = await authorRef.update({
+          quotes: updatedQuotes,
+        });
+      }
+  
+      res.status(200).send({ message: "Quote added successfully." });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Internal server error." });
+    }
+  });
+  
+\end{verbatim}
+\newpage
+\textbf{What is req.body?}\\ 
+
+The\textit{``req.body''} is an ``object'' derived from the request ``body'' of a HTTP POST, PUT, or PATCH request.
+This object can be destructored so that the properties are extracted from the request. These extracted values do have to be from the request body, as that is where they are expected to be submitted by the client.
+
+
+So in our example, we are using destructoring to extract ``author'' and  ``quotes'' properties from the ``req.body'' object.
+
+\begin{verbatim}
+  const { author, quotes } = req.body;
+\end{verbatim}
+
+
+\newpage
+\textbf{What does \textit{await} do in \textit{const doc = await authorRef.get()}? }\\
+
+The await keyword is an alternative and much simpler way to handle asynchronous operations/promises in JavaScript.
+Therefore, in our example, we are using the ``await'' keyword to await the result of a Promise returned by the ``get()'' method of a Firestore database reference.\\ 
+
+The ``get()'' method is an asynchronous operation that returns a Promise that resolved with a ``DocumentSnapshot'' containing the data of the requested document.
+Thus, by using ``await'' with the ``get()'' method, we are telling the program to wait until the \textbf{Promise} is resolved with the \textbf{DocumentSnapshot} object before continuing with the execution of the code.
+
+\newpage
+\textbf{Why is it important to use \textit{await}?}\\
+
+If we did not use \textit{``await''} in this line, the program would continue executing without waiting for the \textbf{Promise} to resolve, and the doc variable would contain an unresolved \textbf{Promise} instead of the \textbf{DocumentSnapshot} object. By using ``await'', we can ensure that the ``doc'' variable contains the expected value before moving on to the next line of code.
+\newpage
+\textbf{What is happening in the following block?:}\\
+\begin{verbatim}
+  const newAuthor = await authorRef.set({
+    author,
+    quotes: [quotes],
+  });
+\end{verbatim}
+So similar to the \textit{get()} function above, the \textit{set()} function also returns a promise that will be resolved and assigned to the \textit{newAuthor} constant variable.
+That is why the \textit{await} keyword is used here. Additionally, the ``quotes: [quotes]'' syntax is creating  a new array with a single element that contains the value of the ``quotes'' variable.
+So, in effect, we're creating a new document in a Firestore collection that represents an author, and the document contains two fields: an \textit{author} field that contains the name of the author, and a \textit{quotes} field that contains an array with a single element representing a quote from the author.
+
+\newpage
+\textbf{What is happening in the following block?:}\\
+\begin{verbatim}
+  const existingQuotes = doc.data().quotes;
+  const updatedQuotes = [...existingQuotes, quotes];
+  const update = await authorRef.update({
+      quotes: updatedQuotes,
+  });
+\end{verbatim}
+
+In this code, we're retrieving the existing quotes from the \textit{doc} object by accessing the \textit{quotes} field using dot notation (doc.data().quotes). We're then creating a new array called \textit{updatedQuotes} that contains all the existing quotes and the new quotes value. We're using the spread syntax to spread the elements of existingQuotes into the new array, and then adding the quotes variable as a new element at the end of the array. Finally, we're updating the Firestore document with the new \textit{updatedQuotes} array and using the await keyword since the \textit{update()} function returns a Promise.\\
+
+
+
+So, in effect, we're taking the existing quotes, creating a new array that includes the existing quotes and the new quote, and updating the Firestore document with the new array. This way, we're appending the new quote to the existing quotes array in the document.
+
+
+
 \end{document}

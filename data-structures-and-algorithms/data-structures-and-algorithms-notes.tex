@@ -11,7 +11,7 @@
 \section{LINKED LISTS}
 A \textbf{linked list} is a \textbf{linear} data structure in which elements are stored in \textbf{nodes} and each node \textbf{points} to the \textbf{next node} in the list. The main advantage of linked lists over arrays is that elements can be\textbf{ easily inserted} or \textbf{removed} without reallocating memory for the entire list. There are two main types of linked lists: \textbf{single linked} lists and \textbf{double linked lists}.\\
 
-Each list is a linear data typically has the following functions:
+Each list typically has the following functions:
 
 \begin{enumerate}[label=\arabic*., wide=0pt, labelwidth=!, labelsep=5pt]
 
@@ -30,6 +30,7 @@ Each list is a linear data typically has the following functions:
     \item \textbf{Sort:} Sorting the nodes in the linked list based on their values.
 
 \end{enumerate}
+\newpage
 \subsection[short]{Single Linked List}
 In a single linked list, each node has a single reference to the next node in the list. This makes it easy to traverse the list in one direction, but difficult to traverse the list in reverse or to efficiently find the previous node.\\
 
@@ -79,7 +80,7 @@ The purpose of this method is to add a Node to the end of the list. We can creat
     {
         ...
 
-        append(){
+        append(data){
 
             const newNode = new Node(data)
             // if the list is empty set the value of the head and tail to the newNode
@@ -94,6 +95,7 @@ The purpose of this method is to add a Node to the end of the list. We can creat
                 this.tail = newNode;
             }
 
+        this.length++;
         return this;
         }
 
@@ -105,10 +107,12 @@ The first thing we need to do is to check if the \textbf{head} of the list is nu
 In the case where the head is not empty, (which will be the case now ) we want to set the value of the tail to the newNode. This can be accomplished by the else statement below:
 
 \begin{verbatim}
+    ...
     else{
         this.tail.next = newNode;
         this.tail = newNode;
         }
+     ...
 \end{verbatim}
 
 The first line sets the value of the current tail's \textbf{next property} to the newNode. Then the second line sets the value of the tail to the newNode - appending the Node to the end of the list.
@@ -123,19 +127,70 @@ In other words, we are updating the value of the \textit{next} property in the \
 In this method we would like to add the newly created Node in the beginning of the list. This can be achieved in the following code:
 
 \begin{verbatim}
-    prepend(){
+    ...
+    prepend(data){
     
         const newNode = new Node(data);
         newNode.next = this.head;
         this.head = newNode;
-
+        this.length++;
         return this;
 
+    }
+    ...
+
+\end{verbatim}
+
+The \textit{prepend()} method logic is fairly intuitive and simple. We start off by creating a new Node (\textit{new Node(data)})  with the variable name \textbf{newNode}. Then we make \textit{this.head }point to the same place in memory that the \textit{newNode}
+variable is pointing to - making the \textbf{newNode} the new head of the list. Then we make the next property of the newNode variable point to where \textit{this.head} is pointing to in memory - \textbf{connecting} or \textbf{linking} the nodes together.
+
+
+\newpage
+\subsubsection{remove()}
+
+The \textit{remove()} method requires a little bit of extra effort to fully understand but is nonetheless still not that hard. Please find the method definition below:
+
+\begin{verbatim}
+    
+    ...
+
+    remove(data){
+
+    let current  = this.head;
+
+    if(this.head===null){
+        console.log("There's nothing to remove!");
+    }
+
+    if(current.data===data){
+        this.head = current.next;
+        this.length--;
+        return this;
+    }
+
+    while(current.next){
+        if(current.next.data==data){
+            break;
+        }
+        current = current.next;
+    }
+
+    if(current.next==null){
+        console.log("Node not found");
+    }
+
+    current.next = current.next.next;
+    ...
     }
 
 \end{verbatim}
 
+As it was said earlier this function deals with a lot. The code starts with the variable \textit{current} being assigned to the value of \textit{this.head}, so \textit{current} and \textit{this.head} now reference the same object in memory. 
+So, whenever \textit{current} is modified, the value of \textit{this.head} is also modified. We then check the value of \textit{this.head} to see if its null or not - if the list is empty. Once that is out of the way, we check the value of the \textit{data} property of the \textit{current} node to see if it matches with the data that we are looking for. 
+If true, the value of \textit{this.head} will point to the same node object in memory that the \textit{next} property of the \textit{current} node is pointing to. Thus, skipping over the head and "removing" it. So the \textit{this.head }node should be equal to the node that was in the \textit{next} property of the \textit{current} node.\\
 
+If the data of the current node is not equal to the data that we want to remove, the code enters a while loop and iterates over the linked list until it finds a node whose next property has the data that we want to remove.
+The while loop checks if there are any items left in the linked list by checking if the \textit{next} property of the \textit{current} node is not null. Within the while loop, the \textit{data} property of the \textit{current} node is compared to the desired value. If a match is found, the program exits the while loop using the break statement and sets the next property of the \textit{current} node to the \textit{next} property of the \textit{next} node - skipping over the node that matches the data. If there are no matches found, the \textit{current} node will point to the next property of the \textit{current} node - iterating over the list.
 
 
 \newpage
